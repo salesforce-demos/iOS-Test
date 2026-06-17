@@ -61,9 +61,9 @@ struct CallView: View {
                 .frame(maxWidth: .infinity, alignment: .top)
 
                 // Call controls
-                VStack(spacing: 20) {
+                VStack(alignment: .leading, spacing: 20) {
                     VStack(spacing: 14) {
-                        HStack(spacing: 0) {
+                        HStack(spacing: 30) {
                             callButton(
                                 icon: isSpeaker ? "speaker.wave.3.fill" : "speaker.wave.2.fill",
                                 label: String(localized: "Audio", bundle: bundle),
@@ -101,7 +101,7 @@ struct CallView: View {
                                         .foregroundStyle(.white.opacity(0.75))
                                 }
                             }
-                            .frame(width: w / 3)
+                            .frame(width: w / 2)
                             callButton(icon: "circle.grid.3x3.fill", label: String(localized: "Keypad", bundle: bundle), width: w / 3) {}
                         }
                     }
@@ -137,7 +137,7 @@ struct CallView: View {
         switch callManager.state {
         case .ringing:   Text(String(localized: "Calling mobile...", bundle: bundle))
         case .connected: Text(callManager.timerString)
-        case .ended:     Text(String(localized: "Call ended", bundle: bundle))
+        case .disconnected: Text(String(localized: "Call ended", bundle: bundle))
         }
     }
 
