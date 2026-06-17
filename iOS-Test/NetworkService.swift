@@ -14,7 +14,7 @@ class NetworkService {
             completion(.failure(NSError(
                 domain: "NetworkService",
                 code: 404,
-                userInfo: [NSLocalizedDescriptionKey: "No se encontró Configs.json en el bundle."]
+                userInfo: [NSLocalizedDescriptionKey: "Configs.json was not found in the app bundle."]
             )))
             return
         }

@@ -7,16 +7,6 @@
 import SwiftUI
 import AVFoundation
 
-// [ENTREVISTA] ⚠️ Falta la anotación de disponibilidad de plataforma en este struct.
-// Las APIs de Liquid Glass (GlassEffectContainer, .glassEffect()) requieren iOS 26.
-// Agrega la anotación correcta para que el proyecto compile al restaurar los efectos.
-//
-// ✅ RESPUESTA ESPERADA:
-// Agregar @available(iOS 26.0, *) antes de struct CallView.
-// Esta anotación le indica al compilador que este struct solo puede usarse en iOS 26 o superior.
-// Sin ella, cualquier uso de APIs exclusivas de iOS 26 dentro del struct genera un error de compilación.
-// Los sitios que llaman a CallView ya están protegidos con if #available(iOS 26.0, *) o
-// pertenecen a structs que también tienen @available(iOS 26.0, *).
 struct CallView: View {
     let contact: ContactConfig
     var preloadedBackground: UIImage? = nil
@@ -71,15 +61,6 @@ struct CallView: View {
                 .frame(maxWidth: .infinity, alignment: .top)
 
                 // Call controls
-                // [ENTREVISTA] ⚠️ Reemplaza este VStack con el contenedor de Liquid Glass correcto.
-                // Este contenedor agrupa los botones para que sus efectos de vidrio
-                // se fusionen visualmente entre sí (glass morphing) en iOS 26.
-                //
-                // ✅ RESPUESTA ESPERADA:
-                // Reemplazar VStack(spacing: 20) por GlassEffectContainer(spacing: 20)
-                // GlassEffectContainer es el contenedor nativo de Liquid Glass en SwiftUI (iOS 26).
-                // Los elementos hijo que usen .glassEffect() dentro de él se fusionan
-                // visualmente — sin este contenedor los efectos se ven aislados y sin morphing.
                 VStack(spacing: 20) {
                     VStack(spacing: 14) {
                         HStack(spacing: 0) {
@@ -112,14 +93,6 @@ struct CallView: View {
                                         .foregroundStyle(.white)
                                         .frame(width: 85, height: 85)
                                         .background(Circle().fill(Color.red))
-                                        // [ENTREVISTA] ⚠️ Reemplaza .background() con Liquid Glass en el botón de colgar.
-                                        //
-                                        // ✅ RESPUESTA ESPERADA:
-                                        // .glassEffect(.clear.tint(.red).interactive(), in: Circle())
-                                        // .clear es el estilo base del vidrio (transparente/neutro).
-                                        // .tint(.red) le aplica un tinte rojo al efecto de vidrio.
-                                        // .interactive() activa el feedback visual al presionar el botón.
-                                        // in: Circle() define la forma del recorte del efecto.
                                     Text(String(localized: "End", bundle: bundle))
                                         .font(.system(size: 13))
                                         .foregroundStyle(.white.opacity(0.75))
@@ -178,14 +151,6 @@ struct CallView: View {
                     .frame(width: 85, height: 85)
                     .contentShape(Circle())
                     .background(Circle().fill(Color.white.opacity(0.25)))
-                    // [ENTREVISTA] ⚠️ Reemplaza .background() con Liquid Glass en los botones de control.
-                    //
-                    // ✅ RESPUESTA ESPERADA:
-                    // .glassEffect(.clear.interactive(), in: Circle())
-                    // A diferencia del botón de colgar, aquí no se usa .tint() porque
-                    // los botones de control son neutros — el vidrio toma el color del fondo.
-                    // Cuando active == true, el ícono ya cambia a .black (ver foregroundStyle arriba)
-                    // para mantener contraste sobre el vidrio activado.
                 Text(label)
                     .font(.system(size: 13))
                     .foregroundStyle(.white.opacity(0.75))

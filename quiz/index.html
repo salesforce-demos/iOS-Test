@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Salesforce — Evaluación iOS</title>
+<title>Salesforce — iOS Assessment</title>
 <style>
   :root {
     --sf-blue: #0176D3;
@@ -196,93 +196,93 @@
 
 <div class="container">
   <header class="intro">
-    <h1>Evaluación técnica iOS</h1>
+    <h1>iOS Technical Assessment</h1>
   </header>
 
   <div class="progress-wrap">
     <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
-    <div class="progress-text" id="progress-text">0 de 15 respondidas</div>
+    <div class="progress-text" id="progress-text">0 of 15 answered</div>
   </div>
 
   <div id="quiz"></div>
 
-  <button class="submit-btn" id="submit" disabled>Finalizar y ver resultado</button>
+  <button class="submit-btn" id="submit" disabled>Finish and view result</button>
 </div>
 
 <script>
 const rawQuestions = [
   {
-    q: "\u00bfQu\u00e9 framework introdujo Apple para reemplazar Combine en muchos flujos as\u00edncronos modernos?",
+    q: "Which framework did Apple introduce to replace Combine in many modern async flows?",
     options: ["GCD (Grand Central Dispatch)", "async/await (Swift Concurrency)", "RxSwift", "OperationQueue"],
     correctText: "async/await (Swift Concurrency)"
   },
   {
-    q: "En SwiftUI, \u00bfqu\u00e9 macro reemplaza a ObservableObject + @Published a partir de iOS 17?",
+    q: "In SwiftUI, which macro replaces ObservableObject + @Published starting with iOS 17?",
     options: ["@Observable", "@StateObject", "@Bindable", "@MainActor"],
     correctText: "@Observable"
   },
   {
-    q: "\u00bfQu\u00e9 efecto visual introdujo iOS 26 como nuevo lenguaje de dise\u00f1o?",
+    q: "Which visual effect did iOS 26 introduce as a new design language?",
     options: ["Material Design", "Neumorphism", "Liquid Glass", "Frosted UI"],
     correctText: "Liquid Glass"
   },
   {
-    q: "\u00bfPara qu\u00e9 sirve el atributo @MainActor en Swift Concurrency?",
-    options: ["Acelerar tareas en background", "Crear un nuevo hilo", "Pausar la app", "Garantizar que el c\u00f3digo se ejecute en el hilo principal"],
-    correctText: "Garantizar que el c\u00f3digo se ejecute en el hilo principal"
+    q: "What is the @MainActor attribute used for in Swift Concurrency?",
+    options: ["Speed up background tasks", "Create a new thread", "Pause the app", "Ensure code runs on the main thread"],
+    correctText: "Ensure code runs on the main thread"
   },
   {
-    q: "\u00bfQu\u00e9 framework reemplaz\u00f3 a Core Data como API moderna de persistencia con Swift?",
+    q: "Which framework replaced Core Data as the modern persistence API in Swift?",
     options: ["SwiftData", "Realm", "UserDefaults", "FileManager"],
     correctText: "SwiftData"
   },
   {
-    q: "En SwiftUI, \u00bfqu\u00e9 property wrapper usas para pasar datos a una vista hija permitiendo edici\u00f3n bidireccional con @Observable?",
+    q: "In SwiftUI, which property wrapper do you use to pass data to a child view with two-way editing using @Observable?",
     options: ["@State", "@Environment", "@Bindable", "@Published"],
     correctText: "@Bindable"
   },
   {
-    q: "\u00bfQu\u00e9 herramienta de Xcode permite previsualizar vistas SwiftUI en tiempo real con la macro #Preview?",
+    q: "Which Xcode tool lets you preview SwiftUI views in real time with the #Preview macro?",
     options: ["Instruments", "Simulator", "Playgrounds", "Canvas / Previews"],
     correctText: "Canvas / Previews"
   },
   {
-    q: "\u00bfQu\u00e9 problema detecta el Main Thread Checker?",
-    options: ["Retain cycles", "Actualizaciones de UI fuera del hilo principal", "Memory leaks", "Crashes por force unwrap"],
-    correctText: "Actualizaciones de UI fuera del hilo principal"
+    q: "What issue does Main Thread Checker detect?",
+    options: ["Retain cycles", "UI updates off the main thread", "Memory leaks", "Crashes from force unwrap"],
+    correctText: "UI updates off the main thread"
   },
   {
-    q: "\u00bfQu\u00e9 protocolo se usa para marcar un tipo que puede cruzar l\u00edmites de concurrencia de forma segura?",
+    q: "Which protocol marks a type that can safely cross concurrency boundaries?",
     options: ["Codable", "Equatable", "Sendable", "Hashable"],
     correctText: "Sendable"
   },
   {
-    q: "\u00bfQu\u00e9 framework de Apple permite integrar modelos de machine learning en apps iOS?",
+    q: "Which Apple framework lets you integrate machine learning models into iOS apps?",
     options: ["TensorFlow", "Core ML", "PyTorch", "Keras"],
     correctText: "Core ML"
   },
   {
-    q: "\u00bfCu\u00e1l es la diferencia clave entre 'struct' y 'class' en Swift?",
-    options: ["struct es de referencia, class de valor", "struct es de valor, class de referencia", "No hay diferencia", "class no admite m\u00e9todos"],
-    correctText: "struct es de valor, class de referencia"
+    q: "What is the key difference between 'struct' and 'class' in Swift?",
+    options: ["struct is reference type, class is value type", "struct is value type, class is reference type", "There is no difference", "class does not support methods"],
+    correctText: "struct is value type, class is reference type"
   },
   {
-    q: "\u00bfPara qu\u00e9 se usa la palabra clave 'weak' en una referencia?",
-    options: ["Para acelerar el acceso a memoria", "Para evitar retain cycles (ciclos de retenci\u00f3n)", "Para hacer la propiedad inmutable", "Para ejecutar en background"],
-    correctText: "Para evitar retain cycles (ciclos de retenci\u00f3n)"
+    q: "What is the 'weak' keyword used for in a reference?",
+    options: ["Speed up memory access", "Avoid retain cycles", "Make the property immutable", "Run in background"],
+    correctText: "Avoid retain cycles"
   },
   {
-    q: "\u00bfQu\u00e9 es un 'optional' en Swift?",
-    options: ["Un tipo que puede contener un valor o nil", "Un par\u00e1metro de funci\u00f3n opcional", "Una variable global", "Un tipo que nunca es nil"],
-    correctText: "Un tipo que puede contener un valor o nil"
+    q: "What is an 'optional' in Swift?",
+    options: ["A type that can hold a value or nil", "An optional function parameter", "A global variable", "A type that is never nil"],
+    correctText: "A type that can hold a value or nil"
   },
   {
-    q: "En SwiftUI, \u00bfqu\u00e9 property wrapper crea y posee el ciclo de vida de un objeto observable en una vista?",
+    q: "In SwiftUI, which property wrapper creates and owns the lifecycle of an observable object in a view?",
     options: ["@ObservedObject", "@StateObject", "@Binding", "@EnvironmentObject"],
     correctText: "@StateObject"
   },
   {
-    q: "\u00bfQu\u00e9 herramienta de Xcode se usa para detectar memory leaks y problemas de rendimiento?",
+    q: "Which Xcode tool is used to detect memory leaks and performance issues?",
     options: ["SwiftLint", "Instruments", "Console", "Build Settings"],
     correctText: "Instruments"
   }
@@ -323,7 +323,7 @@ function render() {
 
     const num = document.createElement("span");
     num.className = "q-num";
-    num.textContent = "Pregunta " + (qi + 1);
+    num.textContent = "Question " + (qi + 1);
     card.appendChild(num);
 
     const qt = document.createElement("div");
@@ -358,12 +358,12 @@ function render() {
         if (oi === item.correct) {
           const tag = document.createElement("span");
           tag.className = "tag ok";
-          tag.textContent = "Correcta";
+          tag.textContent = "Correct";
           label.appendChild(tag);
         } else if (answers[qi] === oi) {
           const tag = document.createElement("span");
           tag.className = "tag no";
-          tag.textContent = "Tu respuesta";
+          tag.textContent = "Your answer";
           label.appendChild(tag);
         }
       }
@@ -388,7 +388,7 @@ function updateProgress() {
   const answered = answers.filter(a => a !== null).length;
   const pct = (answered / questions.length) * 100;
   progressEl.style.width = pct + "%";
-  progressText.textContent = answered + " de " + questions.length + " respondidas";
+  progressText.textContent = answered + " of " + questions.length + " answered";
   submitBtn.disabled = answered < questions.length;
 }
 
@@ -398,18 +398,18 @@ submitBtn.addEventListener("click", () => {
     const score = answers.reduce((acc, a, i) => acc + (a === questions[i].correct ? 1 : 0), 0);
 
     let msg;
-    if (score >= 12) msg = "Excelente \u2014 dominio s\u00f3lido de iOS moderno";
-    else if (score >= 9) msg = "Bien \u2014 conocimiento adecuado para semi-senior";
-    else if (score >= 6) msg = "Regular \u2014 algunas brechas a explorar en entrevista";
-    else msg = "Bajo \u2014 revisar fundamentos de iOS moderno";
+    if (score >= 12) msg = "Excellent — strong command of modern iOS";
+    else if (score >= 9) msg = "Good — adequate knowledge for semi-senior";
+    else if (score >= 6) msg = "Fair — some gaps to explore in interview";
+    else msg = "Low — review modern iOS fundamentals";
 
     const card = document.createElement("div");
     card.className = "scorecard";
     card.innerHTML =
       '<div class="score-big">' + score + '/15</div>' +
-      '<div class="score-label">respuestas correctas</div>' +
+      '<div class="score-label">correct answers</div>' +
       '<div class="score-msg">' + msg + '</div>' +
-      '<button class="restart" onclick="location.reload()">Reiniciar cuestionario</button>';
+      '<button class="restart" onclick="location.reload()">Restart quiz</button>';
 
     quizEl.parentNode.insertBefore(card, quizEl);
     submitBtn.style.display = "none";

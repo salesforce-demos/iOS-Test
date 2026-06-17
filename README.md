@@ -1,15 +1,34 @@
-# 🧪 Prueba Técnica: Implementación de "Liquid Glass" (iOS 26+) en `CallView`
+# iOS Technical Exercise
 
-Este documento detalla la resolución de los **tres desafíos clave de la entrevista (marcados con el tag `[ENTREVISTA]`)** dentro del archivo `CallView.swift`. El objetivo de esta prueba es evaluar el dominio de SwiftUI moderno, el control de disponibilidad de APIs avanzadas de Apple y la correcta aplicación de efectos visuales interactivos mediante la tecnología de renderizado orgánico **"Liquid Glass"**.
+This demo is used on keynote and big-screen presentations for Salesforce's most important events. In some scenarios, we cannot present the real iPhone app because of network limitations, missing features, or phone-call system constraints.
 
----
+The goal in those scenarios is to be as pixel-identical to the real Phone app, and deliver a reliable native iOS experience that looks and feels close enough for stage demos.
 
-## 📋 Resumen de los Desafíos Resueltos
+Liquid Glass styling is part of that objective and must be implemented with native iOS development (SwiftUI/UIKit), which can not be replicated with HTML/CSS.
 
-| Desafío | Ubicación | Problema Técnico | Solución Aplicada |
-| :--- | :--- | :--- | :--- |
-| **1. Disponibilidad de Plataforma** | Cabecera del `struct` | Error de compilación al usar APIs exclusivas de iOS 26 en entornos antiguos. | Anotación de disponibilidad `@available(iOS 26.0, *)`. |
-| **2. Fusión de Vidrio (Morphing)** | Contenedor de Controles | Los botones de vidrio se renderizaban de forma aislada y estática. | Reemplazo de `VStack` por `GlassEffectContainer`. |
-| **3. Efectos de Vidrio Interactivos** | Botones de control y colgar | Uso de fondos planos opacos (`.background`) sin profundidad ni interacción física. | Implementación de `.glassEffect()` neutro y tintado (`.tint(.red)`) con comportamiento `.interactive()`. |
+## Candidate Task
 
----
+You are given a working project with intentionally incomplete or imperfect implementation details.
+
+Your objective is to:
+
+- Review the codebase and identify issues.
+- Implement missing pieces in the call experience.
+- Keep changes clean, minimal, and production-minded.
+- Ensure the app builds and runs successfully after your changes.
+- Evaluate how this app can be reused across different demo scenarios, including different brands and Salesforce partners.
+
+## What We Evaluate
+
+- SwiftUI fundamentals and state management.
+- API availability and platform compatibility handling.
+- Ability to reason about UI behavior and polish.
+- Ability to design for reuse and adaptability across multiple demo contexts.
+- Code quality, clarity, and correctness.
+- Communication of tradeoffs and validation steps.
+
+## Bonus (Optional)
+
+This is a hybrid role: roughly 50% iOS and 50% frontend web development. If you want to showcase frontend web skills within this app, that is a plus.
+
+In real keynote demo work, we often present web experiences rendered inside iOS containers (for example, mobile web pages or app-like web surfaces similar to Slack, Teams, or LinkedIn).

@@ -10,16 +10,6 @@ import SwiftUI
 @available(iOS 26.0, *)
 struct PhoneView: View {
     @Environment(\.localizationBundle) private var bundle
-    // [ENTREVISTA] ⚠️ Este property wrapper es incorrecto para este caso.
-    // El ViewModel se crea pero no tiene dueño — se destruye inmediatamente
-    // y los contactos nunca cargan. ¿Cuál es el property wrapper correcto
-    // para una vista que es dueña de su propio ViewModel?
-    //
-    // ✅ RESPUESTA ESPERADA:
-    // Cambiar @ObservedObject por @StateObject.
-    // @StateObject garantiza que SwiftUI sea el dueño del objeto y lo mantenga
-    // vivo durante todo el ciclo de vida de la vista.
-    // @ObservedObject solo observa un objeto que viene de afuera — no lo crea ni lo retiene.
     @ObservedObject private var vm = PhoneViewModel()
 
     var body: some View {
@@ -28,19 +18,34 @@ struct PhoneView: View {
                 contacts: vm.contacts,
                 preloadedImages: vm.contactImages
             )
-            .tabItem { Label(String(localized: "Favorites", bundle: bundle), systemImage: "star.fill") }
+            .tabItem {
+                Text("⭐️ " + String(localized: "Favorites", bundle: bundle))
+                    .padding(.vertical, 10)
+            }
 
             RecentsView()
-                .tabItem { Label(String(localized: "Recents", bundle: bundle), systemImage: "clock.fill") }
+                .tabItem {
+                    Text("🕒 " + String(localized: "Recents", bundle: bundle))
+                        .padding(.vertical, 10)
+                }
 
             ContactsView(contacts: vm.contacts)
-                .tabItem { Label(String(localized: "Contacts", bundle: bundle), systemImage: "person.circle.fill") }
+                .tabItem {
+                    Text("👥 " + String(localized: "Contacts", bundle: bundle))
+                        .padding(.vertical, 10)
+                }
 
             KeypadView()
-                .tabItem { Label(String(localized: "Keypad", bundle: bundle), systemImage: "circle.grid.3x3.fill") }
+                .tabItem {
+                    Text("🔢 " + String(localized: "Keypad", bundle: bundle))
+                        .padding(.vertical, 10)
+                }
 
             VoicemailView()
-                .tabItem { Label(String(localized: "Voicemail", bundle: bundle), systemImage: "recordingtape") }
+                .tabItem {
+                    Text("📼 " + String(localized: "Voicemail", bundle: bundle))
+                        .padding(.vertical, 10)
+                }
         }
         .tint(.blue)
         .task { vm.loadData() }
