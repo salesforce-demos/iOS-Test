@@ -422,9 +422,9 @@ struct KeypadButton: View {
     var body: some View {
         Button(action: action) {
             ZStack {
-                Circle()
+                RoundedRectangle(cornerRadius: 39, style: .continuous)
                     .fill(colorScheme == .dark ? darkGray : lightGray)
-                    .frame(width: 78, height: 78)
+                    .frame(width: 82, height: 78)
                 VStack(spacing: 0) {
                     Text(main)
                         .font(.system(size: 34, weight: .regular))
