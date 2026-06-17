@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Salesforce — Evaluación iOS</title>
+<style>
+  :root {
+    --sf-blue: #0176D3;
+    --sf-blue-dark: #032D60;
+    --bg: #f3f3f3;
+    --card: #ffffff;
+    --primary: #0176D3;
+    --primary-dark: #032D60;
+    --text: #181818;
+    --muted: #5c5c5c;
+    --border: rgba(0,0,0,0.12);
+    --correct-bg: #e3f6ea;
+    --correct-border: #2e844a;
+    --wrong-bg: #fde7e9;
+    --wrong-border: #ba0517;
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Salesforce Sans', Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 0 0 80px;
+  }
+  .topbar {
+    background: #fff;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .topbar img { height: 44px; width: auto; }
+  .container { max-width: 740px; margin: 0 auto; padding: 28px 16px 0; }
+  header.intro {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  header.intro h1 { font-size: 26px; font-weight: 700; color: var(--sf-blue-dark); }
+  .progress-wrap {
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    padding: 12px 0;
+    margin-bottom: 8px;
+    z-index: 10;
+  }
+  .progress-bar {
+    height: 8px;
+    background: rgba(0,0,0,0.08);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--primary);
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+  .progress-text { font-size: 13px; color: var(--muted); margin-top: 6px; text-align: center; }
+  .question {
+    background: var(--card);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    margin-bottom: 18px;
+  }
+  .q-num {
+    display: inline-block;
+    background: var(--primary);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 3px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+  .q-text { font-size: 17px; font-weight: 500; margin-bottom: 16px; }
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: all 0.15s ease;
+    background: #fff;
+  }
+  .option:hover { border-color: var(--primary); background: #f3f9ff; }
+  .option .letter {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    flex-shrink: 0;
+    color: var(--muted);
+  }
+  .option.selected {
+    border-color: var(--primary);
+    background: #e8f3ff;
+  }
+  .option.selected .letter {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+  }
+  .submit-btn {
+    width: 100%;
+    padding: 16px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.2s ease;
+    font-family: inherit;
+  }
+  .submit-btn:hover { background: var(--primary-dark); }
+  .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .option.review { cursor: default; pointer-events: none; }
+  .option.review.correct-ans {
+    border-color: var(--correct-border);
+    background: var(--correct-bg);
+  }
+  .option.review.correct-ans .letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.review.wrong-ans {
+    border-color: var(--wrong-border);
+    background: var(--wrong-bg);
+  }
+  .option.review.wrong-ans .letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .tag {
+    margin-left: auto;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 10px;
+    border-radius: 12px;
+    white-space: nowrap;
+  }
+  .tag.ok { background: var(--correct-border); color: #fff; }
+  .tag.no { background: var(--wrong-border); color: #fff; }
+  .scorecard {
+    background: var(--card);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px 24px;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .score-big { font-size: 52px; font-weight: 700; color: var(--primary); }
+  .score-label { font-size: 16px; color: var(--muted); margin-top: 4px; }
+  .score-msg { font-size: 17px; font-weight: 500; margin-top: 14px; color: var(--sf-blue-dark); }
+  .restart {
+    background: none;
+    border: 1.5px solid var(--border);
+    color: var(--text);
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 16px;
+    font-family: inherit;
+  }
+  .restart:hover { border-color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <img src="https://a.sfdcstatic.com/shared/images/c360-nav/salesforce-with-type-logo.svg" alt="Salesforce">
+</div>
+
+<div class="container">
+  <header class="intro">
+    <h1>Evaluación técnica iOS</h1>
+  </header>
+
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+    <div class="progress-text" id="progress-text">0 de 15 respondidas</div>
+  </div>
+
+  <div id="quiz"></div>
+
+  <button class="submit-btn" id="submit" disabled>Finalizar y ver resultado</button>
+</div>
+
+<script>
+const rawQuestions = [
+  {
+    q: "\u00bfQu\u00e9 framework introdujo Apple para reemplazar Combine en muchos flujos as\u00edncronos modernos?",
+    options: ["GCD (Grand Central Dispatch)", "async/await (Swift Concurrency)", "RxSwift", "OperationQueue"],
+    correctText: "async/await (Swift Concurrency)"
+  },
+  {
+    q: "En SwiftUI, \u00bfqu\u00e9 macro reemplaza a ObservableObject + @Published a partir de iOS 17?",
+    options: ["@Observable", "@StateObject", "@Bindable", "@MainActor"],
+    correctText: "@Observable"
+  },
+  {
+    q: "\u00bfQu\u00e9 efecto visual introdujo iOS 26 como nuevo lenguaje de dise\u00f1o?",
+    options: ["Material Design", "Neumorphism", "Liquid Glass", "Frosted UI"],
+    correctText: "Liquid Glass"
+  },
+  {
+    q: "\u00bfPara qu\u00e9 sirve el atributo @MainActor en Swift Concurrency?",
+    options: ["Acelerar tareas en background", "Crear un nuevo hilo", "Pausar la app", "Garantizar que el c\u00f3digo se ejecute en el hilo principal"],
+    correctText: "Garantizar que el c\u00f3digo se ejecute en el hilo principal"
+  },
+  {
+    q: "\u00bfQu\u00e9 framework reemplaz\u00f3 a Core Data como API moderna de persistencia con Swift?",
+    options: ["SwiftData", "Realm", "UserDefaults", "FileManager"],
+    correctText: "SwiftData"
+  },
+  {
+    q: "En SwiftUI, \u00bfqu\u00e9 property wrapper usas para pasar datos a una vista hija permitiendo edici\u00f3n bidireccional con @Observable?",
+    options: ["@State", "@Environment", "@Bindable", "@Published"],
+    correctText: "@Bindable"
+  },
+  {
+    q: "\u00bfQu\u00e9 herramienta de Xcode permite previsualizar vistas SwiftUI en tiempo real con la macro #Preview?",
+    options: ["Instruments", "Simulator", "Playgrounds", "Canvas / Previews"],
+    correctText: "Canvas / Previews"
+  },
+  {
+    q: "\u00bfQu\u00e9 problema detecta el Main Thread Checker?",
+    options: ["Retain cycles", "Actualizaciones de UI fuera del hilo principal", "Memory leaks", "Crashes por force unwrap"],
+    correctText: "Actualizaciones de UI fuera del hilo principal"
+  },
+  {
+    q: "\u00bfQu\u00e9 protocolo se usa para marcar un tipo que puede cruzar l\u00edmites de concurrencia de forma segura?",
+    options: ["Codable", "Equatable", "Sendable", "Hashable"],
+    correctText: "Sendable"
+  },
+  {
+    q: "\u00bfQu\u00e9 framework de Apple permite integrar modelos de machine learning en apps iOS?",
+    options: ["TensorFlow", "Core ML", "PyTorch", "Keras"],
+    correctText: "Core ML"
+  },
+  {
+    q: "\u00bfCu\u00e1l es la diferencia clave entre 'struct' y 'class' en Swift?",
+    options: ["struct es de referencia, class de valor", "struct es de valor, class de referencia", "No hay diferencia", "class no admite m\u00e9todos"],
+    correctText: "struct es de valor, class de referencia"
+  },
+  {
+    q: "\u00bfPara qu\u00e9 se usa la palabra clave 'weak' en una referencia?",
+    options: ["Para acelerar el acceso a memoria", "Para evitar retain cycles (ciclos de retenci\u00f3n)", "Para hacer la propiedad inmutable", "Para ejecutar en background"],
+    correctText: "Para evitar retain cycles (ciclos de retenci\u00f3n)"
+  },
+  {
+    q: "\u00bfQu\u00e9 es un 'optional' en Swift?",
+    options: ["Un tipo que puede contener un valor o nil", "Un par\u00e1metro de funci\u00f3n opcional", "Una variable global", "Un tipo que nunca es nil"],
+    correctText: "Un tipo que puede contener un valor o nil"
+  },
+  {
+    q: "En SwiftUI, \u00bfqu\u00e9 property wrapper crea y posee el ciclo de vida de un objeto observable en una vista?",
+    options: ["@ObservedObject", "@StateObject", "@Binding", "@EnvironmentObject"],
+    correctText: "@StateObject"
+  },
+  {
+    q: "\u00bfQu\u00e9 herramienta de Xcode se usa para detectar memory leaks y problemas de rendimiento?",
+    options: ["SwiftLint", "Instruments", "Console", "Build Settings"],
+    correctText: "Instruments"
+  }
+];
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+const questions = rawQuestions.map(item => {
+  const shuffled = shuffle(item.options);
+  return {
+    q: item.q,
+    options: shuffled,
+    correct: shuffled.indexOf(item.correctText)
+  };
+});
+
+const letters = ["A", "B", "C", "D"];
+const answers = new Array(questions.length).fill(null);
+let submitted = false;
+
+const quizEl = document.getElementById("quiz");
+const submitBtn = document.getElementById("submit");
+const progressEl = document.getElementById("progress");
+const progressText = document.getElementById("progress-text");
+
+function render() {
+  quizEl.innerHTML = "";
+  questions.forEach((item, qi) => {
+    const card = document.createElement("div");
+    card.className = "question";
+
+    const num = document.createElement("span");
+    num.className = "q-num";
+    num.textContent = "Pregunta " + (qi + 1);
+    card.appendChild(num);
+
+    const qt = document.createElement("div");
+    qt.className = "q-text";
+    qt.textContent = item.q;
+    card.appendChild(qt);
+
+    const opts = document.createElement("div");
+    opts.className = "options";
+
+    item.options.forEach((opt, oi) => {
+      const label = document.createElement("div");
+      label.className = "option";
+      if (answers[qi] === oi) label.classList.add("selected");
+
+      if (submitted) {
+        label.classList.add("review");
+        if (oi === item.correct) label.classList.add("correct-ans");
+        if (answers[qi] === oi && oi !== item.correct) label.classList.add("wrong-ans");
+      }
+
+      const letter = document.createElement("span");
+      letter.className = "letter";
+      letter.textContent = letters[oi];
+      label.appendChild(letter);
+
+      const txt = document.createElement("span");
+      txt.textContent = opt;
+      label.appendChild(txt);
+
+      if (submitted) {
+        if (oi === item.correct) {
+          const tag = document.createElement("span");
+          tag.className = "tag ok";
+          tag.textContent = "Correcta";
+          label.appendChild(tag);
+        } else if (answers[qi] === oi) {
+          const tag = document.createElement("span");
+          tag.className = "tag no";
+          tag.textContent = "Tu respuesta";
+          label.appendChild(tag);
+        }
+      }
+
+      if (!submitted) {
+        label.addEventListener("click", () => {
+          answers[qi] = oi;
+          render();
+          updateProgress();
+        });
+      }
+
+      opts.appendChild(label);
+    });
+
+    card.appendChild(opts);
+    quizEl.appendChild(card);
+  });
+}
+
+function updateProgress() {
+  const answered = answers.filter(a => a !== null).length;
+  const pct = (answered / questions.length) * 100;
+  progressEl.style.width = pct + "%";
+  progressText.textContent = answered + " de " + questions.length + " respondidas";
+  submitBtn.disabled = answered < questions.length;
+}
+
+submitBtn.addEventListener("click", () => {
+  if (!submitted) {
+    submitted = true;
+    const score = answers.reduce((acc, a, i) => acc + (a === questions[i].correct ? 1 : 0), 0);
+
+    let msg;
+    if (score >= 12) msg = "Excelente \u2014 dominio s\u00f3lido de iOS moderno";
+    else if (score >= 9) msg = "Bien \u2014 conocimiento adecuado para semi-senior";
+    else if (score >= 6) msg = "Regular \u2014 algunas brechas a explorar en entrevista";
+    else msg = "Bajo \u2014 revisar fundamentos de iOS moderno";
+
+    const card = document.createElement("div");
+    card.className = "scorecard";
+    card.innerHTML =
+      '<div class="score-big">' + score + '/15</div>' +
+      '<div class="score-label">respuestas correctas</div>' +
+      '<div class="score-msg">' + msg + '</div>' +
+      '<button class="restart" onclick="location.reload()">Reiniciar cuestionario</button>';
+
+    quizEl.parentNode.insertBefore(card, quizEl);
+    submitBtn.style.display = "none";
+    render();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+});
+
+render();
+updateProgress();
+</script>
+</body>
+</html>
